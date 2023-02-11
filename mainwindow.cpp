@@ -12,29 +12,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("test.db");
-    if (!db.open()) {
-        qDebug() << "Ошибка: соединение с базой данных не удалось";
-    } else {
-        qDebug() << "База данных: соединение в порядке";
-    }
+            db.setDatabaseName("data.db");
+            if (!db.open()) {
+                QMessageBox::critical(this, "Error", "Failed to connect to the database");
+                    return;
+            }
+// Создание таблицы БД
+            QSqlQuery query(db);
+            query.exec("CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY AUTOINCREMENT, num1 INTEGER, num2 INTEGER, num3 INTEGER, num4 INTEGER, num5 INTEGER, average INTEGER)");
 
-    model = new QSqlTableModel(this, db);
-    model->setTable("numbers");
+            model = new QSqlTableModel(this, db);
+            model->setTable("data");
+            model->select();
 
-    // Создание таблицы БД
-    QSqlQuery query(db);
-    query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='numbers'");
-    if (!query.next()) {
-        // Создаю таблицу базы данных, если она не существует
-        query.exec("CREATE TABLE numbers (id INTEGER PRIMARY KEY AUTOINCREMENT, num1 INTEGER, num2 INTEGER, num3 INTEGER, num4 INTEGER, num5 INTEGER, average INTEGER)");
-        // Сообщение о перезапуске
-        QMessageBox::warning(this, "Требуется перезагрузка программы!", "Файл базы данных был создан впервые. Пожалуйста, перезапустите программу, чтобы продолжить.");
-    }
-
-    model->select();
     ui->tableView->setModel(model);
-    ui->tableView->show();
 }
 
 MainWindow::~MainWindow()
