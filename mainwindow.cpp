@@ -118,8 +118,13 @@ void MainWindow::on_deleteButton_clicked()
         return;
     }
 
-    int ret = QMessageBox::warning(this, "Удаление", "Вы уверены, что хотите удалить выбранные строки?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-    if (ret == QMessageBox::Yes) {
+    QMessageBox messageBox(QMessageBox::Warning, "Внимание!", "Вы уверены, что хотите удалить выбранные строки?");
+        QPushButton *yesButton = messageBox.addButton(tr("Да"), QMessageBox::YesRole);
+        QPushButton *noButton = messageBox.addButton(tr("Нет"), QMessageBox::NoRole);
+        messageBox.setDefaultButton(noButton);
+        messageBox.exec();
+
+        if (messageBox.clickedButton() == yesButton) {
         for (int i = selectedIndexes.count() - 1; i >= 0; i--) {
             int row = selectedIndexes.at(i).row();
             model->removeRow(row);
