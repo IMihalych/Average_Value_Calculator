@@ -3,7 +3,7 @@
 #include <QtSql>
 #include <QSqlDatabase>
 #include <QMessageBox>
-#include <QApplication>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
